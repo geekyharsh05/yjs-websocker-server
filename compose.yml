@@ -1,0 +1,39 @@
+services:
+  y-websocket:
+    build: .
+    restart: unless-stopped
+    environment:
+      - HOST=0.0.0.0
+      - PORT=1234
+      - YPERSISTENCE=/home/node/app/dbDir
+    volumes:
+      - y-websocket-data:/home/node/app/dbDir
+    expose:
+      - "1234"
+    networks:
+      - y-websocket-network
+
+  caddy:
+    image: caddy:2.7-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "1234:1234"  # For local testing
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - y-websocket
+    networks:
+      - y-websocket-network
+
+volumes:
+  y-websocket-data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  y-websocket-network:
+    driver: bridge

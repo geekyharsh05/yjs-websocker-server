@@ -1,0 +1,9 @@
+# For production with your domain
+# yourdomain.com {
+#     reverse_proxy y-websocket:1234
+# }
+
+# For local testing
+:1234 {
+    reverse_proxy y-websocket:1234
+}
